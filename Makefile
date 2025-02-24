@@ -3,7 +3,7 @@
 .PHONY:run
 
 build:
-	go build -o bin/http-go cmd/main.go
+	go build -o bin/http-go src/*.go
 
 run: build
 	./bin/http-go
