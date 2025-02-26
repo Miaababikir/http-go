@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"strings"
 )
 
@@ -9,28 +8,48 @@ type Request struct {
 	Method  string
 	Version string
 	Path    string
+	Headers map[string]string
 }
 
 func NewRequest(requestString string) *Request {
 
-	requestParts := strings.Split(requestString, "\n")
+	requestParts := strings.SplitAfter(requestString, "\r\n")
 
-	request := Request{}
+	request := parseRequest(requestParts[0])
 
-	requestInfo := strings.Split(requestParts[0], " ")
+	request.Headers = parseHeaders(requestParts[1:])
 
-	if len(requestInfo) < 2 {
-		log.Fatalln("Something went wrong")
+	return request
+}
+
+func parseHeaders(headerString []string) map[string]string {
+
+	headers := make(map[string]string)
+
+	for _, value := range headerString {
+
+		if value == "\r\n" {
+			break
+		}
+
+		parts := strings.Split(value, ":")
+		headers[parts[0]] = parts[1]
+
 	}
 
-	request.Method = requestInfo[0]
+	return headers
+}
 
-	request.Path = parsePath(requestInfo[1])
+func parseRequest(statusLine string) *Request {
+	requestDetails := strings.Split(statusLine, " ")
 
-	request.Version = "HTTP/1.1"
+	request := &Request{
+		Method:  requestDetails[0],
+		Path:    parsePath(requestDetails[1]),
+		Version: "HTTP/1.1",
+	}
 
-	return &request
-
+	return request
 }
 
 func parsePath(path string) string {

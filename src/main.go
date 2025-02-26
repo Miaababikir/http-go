@@ -1,9 +1,12 @@
 package main
 
 import (
+	"bufio"
+	"bytes"
 	"fmt"
 	"log"
 	"net"
+	"strings"
 )
 
 func main() {
@@ -26,11 +29,25 @@ func main() {
 			log.Printf("Failed to accept the connection: %s", err)
 		}
 
-		var requestBuffer = make([]byte, 1024)
+		reader := bufio.NewReader(conn)
 
-		conn.Read(requestBuffer)
+		var requestBuf bytes.Buffer
 
-		request := NewRequest(string(requestBuffer))
+		for {
+			line, err := reader.ReadString('\n')
+
+			if err != nil {
+				log.Fatal("Something went wrong")
+			}
+
+			requestBuf.WriteString(line)
+
+			if strings.HasSuffix(requestBuf.String(), "\r\n\r\n") {
+				break
+			}
+		}
+
+		request := NewRequest(requestBuf.String())
 
 		response := NewResponse(request)
 

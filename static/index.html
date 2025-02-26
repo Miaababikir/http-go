@@ -2,9 +2,21 @@
 <html lang="en">
     <head>
         <title>HTTP Golang web server</title>
+        <link
+            href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css"
+            rel="stylesheet"
+        />
     </head>
     <body>
-        <h1>Test Web Page</h1>
-        <p>My web server served this page!</p>
+        <div
+            class="flex min-h-screen flex-col items-center justify-center bg-gradient-to-t from-indigo-500 to-indigo-600"
+        >
+            <img src="/img/golang.png" class="w-32" />
+            <div class="rounded-xl bg-white px-6 py-2 text-center shadow-xl">
+                <h1 class="text-2xl font-medium text-gray-800">
+                    Hello from Go HTTP server
+                </h1>
+            </div>
+        </div>
     </body>
 </html>
